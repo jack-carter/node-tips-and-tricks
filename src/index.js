@@ -1,50 +1,62 @@
 console.log("\nJavascript Throttle Demonstration\n")
 
+// we'll use old-style require() to allow use with versions
+// of Node.js prior to 13.
 const Throttle = require('./throttle')
 
-const immediate = Throttle.immediate
-const debounced = Throttle.debounced
-const throttled = Throttle.throttled
-const regulated = Throttle.regulated
-const METHOD = Throttle.METHOD
+// A console.log replacement to include a timestamp
+const CONSOLE = (msg) => console.log(`[${new Date().toISOString()}] ${msg}`)
+
+function WAIT(millis) {
+    return {
+        then: (fn) => {
+            setTimeout(fn,millis)
+        }
+    }
+}
 
 // Common demonstration logic
 function demoOf(tagline,demo) {
+    CONSOLE(`${tagline} demonstration`)
+
     const MSG = (msg) => `${msg} --${tagline}--`
 
     // we should see all 3 of these
-    demo.immediately(MSG('immediately #1'))
-    demo.immediately(MSG('immediately #2'))
-    demo.immediately(MSG('immediately #3'))
+    demo.immediate(MSG('immediately #1'))
+    demo.immediate(MSG('immediately #2'))
+    demo.immediate(MSG('immediately #3'))
 
     // we should see only 1 of these
-    demo.debounce(MSG('debounce #1'))
-    demo.debounce(MSG('debounce #2'))
-    demo.debounce(MSG('debounce #3'))
+    demo.debounced(MSG('debounce #1'))
+    demo.debounced(MSG('debounce #2'))
+    demo.debounced(MSG('debounce #3'))
 
-    // we should see only 2 of these
-    let regulators = 1
-    let regulator = setInterval(() => demo.regulate(MSG(`regulator #${regulators++}`)), 100)
-    setTimeout(() => clearInterval(regulator), 1000)
+    WAIT(1000).then(() => {
+        // we should see only 2 of these
+        let regulator = { count: 0, timeout: null }
+        regulator.timeout = setInterval(() => demo.regulated(MSG(`regulator #${++regulator.count}`)), 100)
+        setTimeout(() => clearInterval(regulator.timeout), 1000)    
+    })
 
-    // we should see all 9 of these, but over about a 4.5 second period
-    let intervals = 1
-    let interval = setInterval(() => demo.throttle(MSG(`throttle #${intervals++}`)), 100)
-    setTimeout(() => clearInterval(interval), 1000)
+    WAIT(5000).then(() => {
+        // we should see all 9 of these, but over about a 4.5 second duration
+        let interval = { count: 0, timeout: null }
+        interval.timeout = setInterval(() => demo.throttled(MSG(`throttle #${++interval.count}`)), 100)
+        setTimeout(() => clearInterval(interval.timeout), 1000)
+    })
 }
 
 // Common construction of the demonstration object
 function DEMO(tagline,fn) {
-    demoOf(tagline,{
-        immediately: immediate(fn),
-        debounce: debounced(fn,500),
-        regulate: regulated(fn,500),
-        throttle: throttled(fn,500)
-    })    
+    WAIT(5000).then(() => {
+        demoOf(tagline,{
+            immediate: Throttle.immediate(fn),
+            debounced: Throttle.debounced(fn,500),
+            regulated: Throttle.regulated(fn,500),
+            throttled: Throttle.throttled(fn,500)
+        }) 
+    })
 }
-
-// A console.log replacement to include a timestamp
-const CONSOLE = (msg) => console.log(`[${new Date().toISOString()}] ${msg}`)
 
 // An object to test against
 let target = { 
@@ -53,6 +65,13 @@ let target = {
     name: 'target',
 }    
 
+CONSOLE('Waiting 5 seconds ...')
+WAIT(5000).then(() => CONSOLE('5 seconds has elapsed'))
+
+CONSOLE('Waiting another 5 seconds ...')
+WAIT(5000).then(() => CONSOLE('another 5 seconds has elapsed'))
+
 // And now for some demonstrations
 DEMO('FUNCTION',CONSOLE)    
-DEMO('METHOD',METHOD(target,'show'))
+DEMO('METHOD',Throttle.METHOD(target,'show'))
+
