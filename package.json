@@ -1,0 +1,23 @@
+{
+  "name": "node-tips-and-tricks",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jack-carter/node-tips-and-tricks.git"
+  },
+  "keywords": [],
+  "author": "Jack Carter <the.jack.carter@gmail.com> (https://www.linkedin.com/in/thejackcarter)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jack-carter/node-tips-and-tricks/issues"
+  },
+  "homepage": "https://github.com/jack-carter/node-tips-and-tricks#readme",
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
