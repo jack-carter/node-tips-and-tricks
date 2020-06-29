@@ -5,11 +5,10 @@ module.exports.METHOD = (object,method) => object[method].bind(object)
 /**
  * There are 4 types of throttle strategies we use in Javascript:
  * 
- * 1) Immediately - to invoke something without delay
- * 2) Debounce - to keep from processing multiple user operations
- * 3) Regulator - to keep the number of times we respond to high-volume events even
- * 4) Throttle - to control how fast we make API calls without losing any requests
- * 
+ * 1) immediate - to invoke something without delay
+ * 2) debounced - to invoke only the last of many requests
+ * 3) regulated - to invoke only so many requests per unit time
+ * 4) throttled - to invoke all requests, but limit the rate of calls
  */
 
 /**
@@ -76,12 +75,8 @@ module.exports.throttled = function(fn,limit) {
  * limit, it will eventually complete every request by 'draining'
  * the requests from a FIFO queue.
  * 
- * Required:
- * 'fn' is the function to be called
- * 'delay' is the time in milliseconds to wait between invocations
- * 
- * Optional:
- * 'scope' is the context to be applied to the invocation
+  * @param {*} fn the function to invoke (required)
+  * @param {*} limit number of milliseconds to wait for subsequent requests (required) 
  */
 module.exports.regulated = function(fn,limit) {
     let requests = []
