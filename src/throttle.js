@@ -1,7 +1,5 @@
 'use strict'
 
-module.exports.METHOD = (object,method) => object[method].bind(object)
-
 /**
  * There are 4 types of throttle strategies we use in Javascript:
  * 
@@ -10,6 +8,9 @@ module.exports.METHOD = (object,method) => object[method].bind(object)
  * 3) regulated - to invoke only so many requests per unit time
  * 4) throttled - to invoke all requests, but limit the rate of calls
  */
+
+// A helper function for wrapping functions on instances
+module.exports.METHOD = (object,method) => object[method].bind(object)
 
 /**
  * This component provides a convenient wrapper that will immediately
@@ -23,18 +24,18 @@ module.exports.immediate = function(fn) {
     return (args) => fn(args)
 }
 
- /**
-  * This component provides a wrapper around a function invocation
-  * limiting the invocation to the last invocation requested within
-  * the time limit proscribed by 'delay'.
-  * 
-  * By design this component is 'lossy' in that it quietly ignores
-  * intervening invocation requests, taking only the last one within
-  * the proscribed time limit.
-  * 
-  * @param {*} fn the function to invoke (required)
-  * @param {*} delay number of milliseconds to wait for subsequent requests (required) 
-  */
+/**
+ * This component provides a wrapper around a function invocation
+ * limiting the invocation to the last invocation requested within
+ * the time limit proscribed by 'delay'.
+ * 
+ * By design this component is 'lossy' in that it quietly ignores
+ * intervening invocation requests, taking only the last one within
+ * the proscribed time limit.
+ * 
+ * @param {*} fn the function to invoke (required)
+ * @param {*} delay number of milliseconds to wait for subsequent requests (required) 
+ */
  module.exports.debounced = function(fn,delay) {
     let timeout
     return (args) => {
@@ -43,17 +44,17 @@ module.exports.immediate = function(fn) {
     }
  }
 
- /**
-  * This component provides a wrapper around a function invocation
-  * limiting the rate of invocations not to exceed the time limit
-  * which is provided.
-  * 
-  * By design this component is 'lossy' in that it quietly ignores
-  * subsequent invocations until the proper delay has elapsed.
-  * 
-  * @param {*} fn the function to invoke (required)
-  * @param {*} limit number of milliseconds to wait for subsequent requests (required) 
-  */
+/**
+ * This component provides a wrapper around a function invocation
+ * limiting the rate of invocations not to exceed the time limit
+ * which is provided.
+ * 
+ * By design this component is 'lossy' in that it quietly ignores
+ * subsequent invocations until the proper delay has elapsed.
+ * 
+ * @param {*} fn the function to invoke (required)
+ * @param {*} limit number of milliseconds to wait for subsequent requests (required) 
+ */
 module.exports.throttled = function(fn,limit) {
     let throttling
     return (args) => {
@@ -75,8 +76,8 @@ module.exports.throttled = function(fn,limit) {
  * limit, it will eventually complete every request by 'draining'
  * the requests from a FIFO queue.
  * 
-  * @param {*} fn the function to invoke (required)
-  * @param {*} limit number of milliseconds to wait for subsequent requests (required) 
+ * @param {*} fn the function to invoke (required)
+ * @param {*} limit number of milliseconds to wait for subsequent requests (required) 
  */
 module.exports.regulated = function(fn,limit) {
     let requests = []
