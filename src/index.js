@@ -1,8 +1,5 @@
 console.log("\nJavascript Throttle Demonstration\n")
 
-// A console.log replacement to include a specific format for all logging
-const CONSOLE = (msg) => console.log(`[${new Date().toISOString()}] ${msg}`)
-
 /**
  * There are 4 types of throttle strategies we use in Javascript:
  * 
@@ -107,7 +104,7 @@ function throttle(fn,limit) {
 
 // Common demonstration logic
 function demoOf(tagline,demo) {
-    const MSG = (msg) => `--${tagline}-- ${msg}`
+    const MSG = (msg) => `${msg} --${tagline}--`
 
     // we should see all 3 of these
     demo.immediately(MSG('immediately #1'))
@@ -140,8 +137,19 @@ function DEMO(tagline,fn) {
     })    
 }
 
-const METHOD = (object,method) => object[method].bind(object)
-const object = { doThis: CONSOLE }    
+// A console.log replacement to include a timestamp
+const CONSOLE = (msg) => console.log(`[${new Date().toISOString()}] ${msg}`)
 
+// A function to properly wrap instance methods as a callable function
+const ON = (object,method) => object[method].bind(object)
+
+// An object to test against
+let target = { 
+    // using an object property ensures our call context is set properly
+    show(msg) { CONSOLE(`${msg} (${this.name})`) },
+    name: 'target',
+}    
+
+// And now for some demonstrations
 DEMO('FUNCTION',CONSOLE)    
-DEMO('METHOD',METHOD(object,'doThis'))
+DEMO('METHOD',ON(target,'show'))
