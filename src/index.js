@@ -76,5 +76,6 @@ let target = {
 
 // And now for some demonstrations
 DEMO('FUNCTION',CONSOLE)    
-//DEMO('METHOD',Throttle.METHOD(target,'save'))
+
+WAIT(10000).then(() => DEMO('METHOD',Throttle.METHOD(target,'save')))
 
