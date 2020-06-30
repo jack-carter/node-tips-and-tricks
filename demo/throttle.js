@@ -1,6 +1,6 @@
 // we'll use old-style require() to allow use with versions
 // of Node.js prior to 13.
-const Throttle = require('./throttle')
+const Throttle = require('../src/throttle')
 
 const wait = Throttle.wait
 const every = Throttle.every
