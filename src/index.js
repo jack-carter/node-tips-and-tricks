@@ -4,6 +4,7 @@ const Throttle = require('./throttle')
 
 const wait = Throttle.wait
 const every = Throttle.every
+const after = Throttle.after
 
 // A console.log replacement to include a timestamp
 const CONSOLE = (msg) => console.log(`[${new Date().toISOString()}] ${msg}`)
@@ -69,14 +70,19 @@ wait(1000).then(() => {
 // A simple demonstration of every() using a dynamic period
 wait(2000).then(() => {
     let count = 0
-    const cycle = every(200).until(1000).then(() => CONSOLE(`until #${++count}`))
+    every(200).until(1000).then(() => CONSOLE(`until #${++count}`))
 })
 
-// A simple demonstration of every().adjust() using both an initial duration and a dynamic period
+// A simple demonstration of after()
+wait(3000).then(() => {
+    let count = 0
+    let adjustment = (adj) => adj + 100
+    after(100).varyBy(adjustment).until(1100).then(() => CONSOLE(`after #${++count}`))
+})
 
 // And now for some demonstrations
-wait(3000).then(() => DEMO('FUNCTION',CONSOLE)) 
+wait(5000).then(() => DEMO('FUNCTION',CONSOLE)) 
 
 // A demonstration of using wait()
-wait(10000).then(() => DEMO('METHOD',Throttle.METHOD(target,'save')))
+wait(15000).then(() => DEMO('METHOD',Throttle.METHOD(target,'save')))
 

@@ -5,6 +5,7 @@ const Scheduling = require('./scheduling')
 // Export scheduling facilities to allow importing only this file.
 module.exports.wait = Scheduling.wait
 module.exports.every = Scheduling.every
+module.exports.after = Scheduling.after
 
 // A helper function for wrapping functions on instances
 module.exports.METHOD = (object,method) => object[method].bind(object)
