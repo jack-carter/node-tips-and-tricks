@@ -2,28 +2,11 @@
 // of Node.js prior to 13.
 const Throttle = require('./throttle')
 
-// We're going to capture activity in a history object, so 
-// we can collect activity streams separately for each demo
-// ensuring when we print them out they are not intertwined.
-function History(tagline) {
-    this.tagline = tagline
-    this.history = []
-
-    function save(msg) {
-        this.history.push(msg)
-    }
-}
+const wait = Throttle.wait
+const every = Throttle.every
 
 // A console.log replacement to include a timestamp
 const CONSOLE = (msg) => console.log(`[${new Date().toISOString()}] ${msg}`)
-
-function WAIT(millis) {
-    return {
-        then: (fn) => {
-            setTimeout(fn,millis)
-        }
-    }
-}
 
 // Common demonstration logic
 function demoOf(tagline,demo) {
@@ -39,14 +22,14 @@ function demoOf(tagline,demo) {
     demo.debounced(`debounced #2`)
     demo.debounced(`debounced #3`)
 
-    WAIT(1000).then(() => {
+    wait(1000).then(() => {
         // we should see all 9 of these, but over about a 4.5 second duration
         let interval = { count: 0, timeout: null }
         interval.timeout = setInterval(() => demo.throttled(`throttled #${++interval.count}`), 100)
         setTimeout(() => clearInterval(interval.timeout), 1000)
     })
 
-    WAIT(3000).then(() => {
+    wait(3000).then(() => {
         // we should see only 2 of these
         let regulator = { count: 0, timeout: null }
         regulator.timeout = setInterval(() => demo.regulated(`regulated #${++regulator.count}`), 100)
@@ -71,11 +54,29 @@ let target = {
     // using an object property ensures our call context is set properly
     save(msg) { CONSOLE(`${msg} (${this.name})`) },
     name: 'target',
-    history: new History('METHOD')
 }    
 
-// And now for some demonstrations
-DEMO('FUNCTION',CONSOLE)    
+// A simple demonstration wait()
+wait(500).then(() => CONSOLE(`wait #1`))
+wait(100).then(() => CONSOLE(`wait #2`))
 
-WAIT(10000).then(() => DEMO('METHOD',Throttle.METHOD(target,'save')))
+// A simple demonstration of every() using just a duration
+wait(1000).then(() => {
+    let count = 0
+    const cycle = every(200).then(() => CONSOLE(`every #${++count}`))
+    wait(1000).then(() => cycle.cancel())    
+})
+// A simple demonstration of every() using a dynamic period
+wait(2000).then(() => {
+    let count = 0
+    const cycle = every(200).until(1000).then(() => CONSOLE(`until #${++count}`))
+})
+
+// A simple demonstration of every().adjust() using both an initial duration and a dynamic period
+
+// And now for some demonstrations
+wait(3000).then(() => DEMO('FUNCTION',CONSOLE)) 
+
+// A demonstration of using wait()
+wait(10000).then(() => DEMO('METHOD',Throttle.METHOD(target,'save')))
 

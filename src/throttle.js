@@ -1,5 +1,14 @@
 'use strict'
 
+const Scheduling = require('./scheduling')
+
+// Export scheduling facilities to allow importing only this file.
+module.exports.wait = Scheduling.wait
+module.exports.every = Scheduling.every
+
+// A helper function for wrapping functions on instances
+module.exports.METHOD = (object,method) => object[method].bind(object)
+
 /**
  * There are 4 types of throttle strategies we use in Javascript:
  * 
@@ -8,9 +17,6 @@
  * 3) regulated - to invoke only so many requests per unit time
  * 4) throttled - to invoke all requests, but limit the rate of calls
  */
-
-// A helper function for wrapping functions on instances
-module.exports.METHOD = (object,method) => object[method].bind(object)
 
 /**
  * This component provides a convenient wrapper that will immediately
